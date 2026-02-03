@@ -1,4 +1,4 @@
-version: '3'
+version: "3"
 services:
   azure-vote-back:
     image: mcr.microsoft.com/oss/bitnami/redis:6.0.8
@@ -6,20 +6,32 @@ services:
     environment:
       ALLOW_EMPTY_PASSWORD: "yes"
     ports:
-        - "6379:6379"
+      - "${REDIS_PORT}:6379"
     restart: unless-stopped
     volumes:
-        - redisdata:/data
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
-  azure-vote-front:
+    azure-vote-front:
     build: ./azure-vote
     image: mcr.microsoft.com/azuredocs/azure-vote-front:v1
     container_name: azure-vote-front
     environment:
       REDIS: azure-vote-back
     ports:
-        - "8080:80"
+      - "${FRONT_PORT}:80"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 
 volumes:
   redisdata:
+      - "${FRONT_PORT}:80"
