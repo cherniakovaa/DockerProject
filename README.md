@@ -1,31 +1,52 @@
+# Azure Voting App (Docker + Redis)
+
+## Opis projektu
+
+Projekt przedstawia prostą aplikację do głosowania (koty vs psy), uruchamianą w środowisku kontenerowym przy użyciu **Docker Compose**.  
+Aplikacja składa się z dwóch kontenerów:
+
+- **Frontend** – aplikacja webowa (Python / Flask), umożliwiająca oddawanie głosów
+- **Backend** – baza danych **Redis**, w której zapisywane są głosy
+
+Projekt bazuje na oficjalnym przykładzie Microsoft Azure Voting App i został dostosowany do pracy lokalnej z użyciem Dockera.
+
+Repozytorium bazowe:
+https://github.com/Azure-Samples/azure-voting-app-redis
+
 ---
-page_type: sample
-languages:
-  - python
-products:
-  - azure
-  - azure-redis-cache
-description: "This sample creates a multi-container application in an Azure Kubernetes Service (AKS) cluster."
+
+## Technologie
+
+- Docker
+- Docker Compose
+- Redis
+- Python (Flask)
+- Git / GitHub
+
 ---
 
-# Azure Voting App
+## Architektura aplikacji
 
-This sample creates a multi-container application in an Azure Kubernetes Service (AKS) cluster. The application interface has been built using Python / Flask. The data component is using Redis.
+Aplikacja składa się z dwóch serwisów uruchamianych w `docker-compose.yaml`:
 
-To walk through a quick deployment of this application, see the AKS [quick start](https://docs.microsoft.com/en-us/azure/aks/kubernetes-walkthrough?WT.mc_id=none-github-nepeters).
+1. **azure-vote-front**
+   - interfejs webowy dostępny w przeglądarce
+   - komunikuje się z Redisem po nazwie serwisu
 
-To walk through a complete experience where this code is packaged into container images, uploaded to Azure Container Registry, and then run in and AKS cluster, see the [AKS tutorials](https://docs.microsoft.com/en-us/azure/aks/tutorial-kubernetes-prepare-app?WT.mc_id=none-github-nepeters).
+2. **azure-vote-back**
+   - kontener z Redisem
+   - przechowuje liczbę głosów na koty i psy w pamięci
 
-## Contributing
+Komunikacja pomiędzy kontenerami odbywa się wewnątrz sieci Dockera.
 
-This project welcomes contributions and suggestions.  Most contributions require you to agree to a
-Contributor License Agreement (CLA) declaring that you have the right to, and actually do, grant us
-the rights to use your contribution. For details, visit https://cla.microsoft.com.
+---
 
-When you submit a pull request, a CLA-bot will automatically determine whether you need to provide
-a CLA and decorate the PR appropriately (e.g., label, comment). Simply follow the instructions
-provided by the bot. You will only need to do this once across all repos using our CLA.
+## Zmienne środowiskowe (.env)
 
-This project has adopted the [Microsoft Open Source Code of Conduct](https://opensource.microsoft.com/codeofconduct/).
-For more information see the [Code of Conduct FAQ](https://opensource.microsoft.com/codeofconduct/faq/) or
-contact [opencode@microsoft.com](mailto:opencode@microsoft.com) with any additional questions or comments.
+Projekt wykorzystuje plik `.env`, który **nie jest dodawany do repozytorium**.
+
+### Przykład
+
+```env
+REDIS_PORT=6379
+FRONT_PORT=8080
