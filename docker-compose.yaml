@@ -7,6 +7,9 @@ services:
       ALLOW_EMPTY_PASSWORD: "yes"
     ports:
         - "6379:6379"
+    restart: unless-stopped
+    volumes:
+        - redisdata:/data
 
   azure-vote-front:
     build: ./azure-vote
@@ -16,3 +19,7 @@ services:
       REDIS: azure-vote-back
     ports:
         - "8080:80"
+    restart: unless-stopped
+
+volumes:
+  redisdata:
